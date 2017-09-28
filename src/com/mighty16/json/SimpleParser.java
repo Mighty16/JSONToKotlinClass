@@ -45,33 +45,31 @@ public class SimpleParser extends JsonParser {
                 JSONArray array = (JSONArray) val;
 
                 String typeName = StringUtils.capitalize(key);
-                ClassModel c = classes.get(typeName);
-                if (c != null) {
-                    classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.getArrayType(typeName), "Array"));
-                    if (array.length() > 0) {
-                        Object firstArrayElement = array.get(0);
-                        if (firstArrayElement instanceof JSONObject) {
-                            classData.addField(new FieldModel(key, typesResolver.getFieldName(key),
-                                    typesResolver.getArrayType(typeName), "Array"));
-                            findClasses((JSONObject) firstArrayElement, typesResolver.resolve(typeName));
-                        } else {
-                            String type = val.getClass().getSimpleName();
-                            classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.getArrayType(type), String.valueOf(val)));
-                        }
-                    }
+                ClassModel parsedClass = classes.get(typeName);
+
+                String arrayItemTypeName;
+
+                if (parsedClass != null) {
+                    classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.getArrayType(typeName),
+                            "Array"));
+                    arrayItemTypeName = typeName;
                 } else {
-                    if (array.length() > 0) {
-                        Object firstArrayElement = array.get(0);
-                        if (firstArrayElement instanceof JSONObject) {
-                            classData.addField(new FieldModel(key, typesResolver.getFieldName(key),
-                                    typesResolver.getArrayType(typeName + "Item"), "Array"));
-                            findClasses((JSONObject) firstArrayElement, typesResolver.resolve(typeName + "Item"));
-                        } else {
-                            String type = firstArrayElement.getClass().getSimpleName();
-                            classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.getArrayType(type), "Array"));
-                        }
+                    arrayItemTypeName = typeName + "Item";
+                }
+
+                if (array.length() > 0) {
+                    Object firstArrayElement = array.get(0);
+                    if (firstArrayElement instanceof JSONObject) {
+                        classData.addField(new FieldModel(key, typesResolver.getFieldName(key),
+                                typesResolver.getArrayType(arrayItemTypeName), "Array"));
+                        findClasses((JSONObject) firstArrayElement, typesResolver.resolve(arrayItemTypeName));
+                    } else {
+                        String type = firstArrayElement.getClass().getSimpleName();
+                        classData.addField(new FieldModel(key, typesResolver.getFieldName(key),
+                                typesResolver.getArrayType(type), "Array"));
                     }
                 }
+
             } else {
                 String type = val.getClass().getSimpleName();
                 classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.resolve(type), String.valueOf(val)));

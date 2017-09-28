@@ -1,0 +1,7 @@
+.idea/
+*.iml
+out/
+JSONKotlinModels.jar
+JSONKotlinModels.zip
+*.ipr
+*.iws

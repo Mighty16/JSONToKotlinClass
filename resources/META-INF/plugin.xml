@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.mighty16.json.kotlin.class</id>
     <name>Generate Kotlin data classes from JSON</name>
-    <version>0.81</version>
+    <version>0.8.2</version>
     <vendor email="mighty16.developer@gmail.com">Mighty16</vendor>
 
     <description>Plugin generates Kotlin data classes from JSON text. It can find inner classes in nested JSON. You can disable undesirable fields in class, change field name and type and add Gson annotations.</description>

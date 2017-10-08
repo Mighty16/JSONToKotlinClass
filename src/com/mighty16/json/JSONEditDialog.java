@@ -11,13 +11,7 @@ import org.json.JSONObject;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.Document;
-import javax.swing.text.Highlighter;
-import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import java.util.List;
 
 public class JSONEditDialog extends JDialog {

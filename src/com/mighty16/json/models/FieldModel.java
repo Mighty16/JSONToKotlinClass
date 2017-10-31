@@ -12,6 +12,7 @@ public class FieldModel {
     public String type;
     public String originalValue;
     public boolean enabled;
+    public boolean mutable;
 
     public FieldModel(String jsonName, String name, String type, String originalValue) {
         this.jsonName = jsonName;

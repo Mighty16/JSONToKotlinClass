@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ClassModel {
 
+    public String packageName;
     public String name;
     public List<FieldModel> fields;
 

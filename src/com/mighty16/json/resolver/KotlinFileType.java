@@ -1,4 +1,4 @@
-package com.mighty16.json.kotlin;
+package com.mighty16.json.resolver;
 
 
 import com.intellij.openapi.fileTypes.FileType;
@@ -10,7 +10,7 @@ import javax.swing.*;
 
 public class KotlinFileType implements FileType {
 
-    static final KotlinFileType INSTANCE = new KotlinFileType();
+    public static final KotlinFileType INSTANCE = new KotlinFileType();
 
     @NotNull
     @Override

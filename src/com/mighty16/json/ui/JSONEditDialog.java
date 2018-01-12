@@ -1,23 +1,20 @@
-package com.mighty16.json;
+package com.mighty16.json.ui;
 
 import com.intellij.openapi.ui.Messages;
-import com.mighty16.json.kotlin.KotlinTypesResolver;
+import com.mighty16.json.resolver.KotlinResolver;
 import com.mighty16.json.models.ClassModel;
+import com.mighty16.json.parser.SimpleParser;
+import com.mighty16.json.ui.ErrorMessageParser;
 import com.mighty16.json.ui.GuiHelper;
 import com.mighty16.json.ui.JSONColorizer;
 import com.mighty16.json.ui.PopupListener;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Caret;
-import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class JSONEditDialog extends JDialog {
     private JPanel contentPane;
@@ -26,15 +23,12 @@ public class JSONEditDialog extends JDialog {
     private JTextField classNameTextField;
     private JTextPane jsonTestPanel;
     private JLabel jsonErrorLabel;
-
     private JSONColorizer jsonColorizer;
-
     private JSONEditCallbacks callbacks;
+    private ErrorMessageParser errorMessageParser;
 
     private boolean isFormatting = false;
 
-    private Pattern jsonCharacterErrorPattern = Pattern.compile("(?<=\\[character )(.*)(?= line )");
-    private Pattern jsonLineErrorPattern = Pattern.compile("(?<=line )(.*)(?=])");
 
     public JSONEditDialog(JSONEditCallbacks callbacks) {
         this.callbacks = callbacks;
@@ -97,9 +91,8 @@ public class JSONEditDialog extends JDialog {
         jsonTestPanel.addMouseListener(new PopupListener(contextMenuPopup));
 
         jsonColorizer = new JSONColorizer(jsonTestPanel);
-
+        errorMessageParser = new ErrorMessageParser();
     }
-
 
     private void onOK() {
         String text = jsonTestPanel.getText();
@@ -117,12 +110,15 @@ public class JSONEditDialog extends JDialog {
 
 
     private void formatJson(String text) {
-        if (text.length() == 0) return;
+        if (text.length() == 0) {
+            jsonErrorLabel.setText("");
+            jsonColorizer.clearErrorHighLight();
+            return;
+        }
         if (isFormatting) {
             isFormatting = false;
             return;
         }
-        System.out.println("formatJson() was called");
         isFormatting = true;
         Runnable doFormatting = new Runnable() {
             @Override
@@ -137,7 +133,11 @@ public class JSONEditDialog extends JDialog {
                 } catch (JSONException jsonException) {
                     String errorMessage = jsonException.getMessage();
                     jsonErrorLabel.setText(errorMessage);
-                    findAndHighlightError(errorMessage);
+
+                    ErrorMessageParser.ErrorLocation errorLocation = errorMessageParser.findErrorLocation(errorMessage);
+                    if (errorLocation!=null){
+                        jsonColorizer.highlightError(errorLocation.line, errorLocation.character);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
@@ -151,7 +151,7 @@ public class JSONEditDialog extends JDialog {
 
     private void processJSON(String jsonText, String rootClassName) {
         try {
-            SimpleParser parser = new SimpleParser(new KotlinTypesResolver());
+            SimpleParser parser = new SimpleParser(new KotlinResolver());
             JSONObject json = new JSONObject(jsonText);
             parser.parse(json, rootClassName);
             List<ClassModel> parsedClasses = parser.getClasses();
@@ -173,30 +173,4 @@ public class JSONEditDialog extends JDialog {
     public interface JSONEditCallbacks {
         void onJsonParsed(List<ClassModel> classDataList);
     }
-
-    private void findAndHighlightError(String errorMessage) {
-        System.out.println(errorMessage);
-        try {
-            Matcher characterMatcher = jsonCharacterErrorPattern.matcher(errorMessage);
-
-            if (characterMatcher.find()) {
-                String characterNumber = errorMessage.substring(characterMatcher.start(), characterMatcher.end());
-                System.out.println("characterMatcher matches! characterNumber: " + characterNumber);
-                String lineNumber = null;
-                Matcher lineMatcher = jsonLineErrorPattern.matcher(errorMessage);
-                if (lineMatcher.find()) {
-                    lineNumber = errorMessage.substring(lineMatcher.start(), lineMatcher.end());
-                    System.out.println("lineMatcher matches! lineNumber: " + lineNumber);
-                }
-                if (lineNumber != null) {
-                    System.out.println("highlightError");
-                    jsonColorizer.highlightError(Integer.valueOf(lineNumber), Integer.valueOf(characterNumber));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
 }

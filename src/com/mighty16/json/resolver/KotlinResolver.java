@@ -1,11 +1,11 @@
-package com.mighty16.json.kotlin;
+package com.mighty16.json.resolver;
 
-import com.mighty16.json.TypesResolver;
+import com.intellij.openapi.fileTypes.FileType;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
 
-public class KotlinTypesResolver extends TypesResolver {
+public class KotlinResolver extends LanguageResolver {
 
     private static final String INT = "Int";
     private static final String LONG = "Long";
@@ -13,11 +13,10 @@ public class KotlinTypesResolver extends TypesResolver {
     private static final String DOUBLE = "Double";
     private static final String BOOLEAN = "Boolean";
 
-
     private HashMap<String, String> types;
     private HashMap<String, Object> defaultvalues;
 
-    public KotlinTypesResolver() {
+    public KotlinResolver() {
         types = new HashMap<>();
         types.put(TYPE_INTEGER, INT);
         types.put(TYPE_LONG, LONG);
@@ -51,8 +50,7 @@ public class KotlinTypesResolver extends TypesResolver {
 
     @Override
     public String getFieldName(String jsonName) {
-        String result = toCamelCase(jsonName);
-        return result;
+        return toCamelCase(jsonName);
     }
 
     @Override
@@ -70,8 +68,28 @@ public class KotlinTypesResolver extends TypesResolver {
     }
 
     @Override
+    public String getModifier(boolean mutable) {
+        return mutable ? "var" : "val";
+    }
+
+    @Override
+    public boolean isModifierMutable(String modifier) {
+        return modifier.equals("var");
+    }
+
+    @Override
     public boolean canChangeType(String type) {
         return !type.endsWith("?");
+    }
+
+    @Override
+    public String getFileName(String className) {
+        return className + ".kt";
+    }
+
+    @Override
+    public FileType getFileType() {
+        return KotlinFileType.INSTANCE;
     }
 
     private String toCamelCase(String name) {

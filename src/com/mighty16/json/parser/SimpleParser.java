@@ -1,6 +1,7 @@
-package com.mighty16.json;
+package com.mighty16.json.parser;
 
 
+import com.mighty16.json.resolver.LanguageResolver;
 import com.mighty16.json.models.ClassModel;
 import com.mighty16.json.models.FieldModel;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +14,7 @@ public class SimpleParser extends JsonParser {
 
     private Map<String, ClassModel> classes;
 
-    public SimpleParser(TypesResolver resolver) {
+    public SimpleParser(LanguageResolver resolver) {
         super(resolver);
         classes = new HashMap<>();
     }
@@ -29,7 +30,7 @@ public class SimpleParser extends JsonParser {
     }
 
     private void findClasses(JSONObject json, String name) {
-        ClassModel classData = new ClassModel(typesResolver.getClassName(name));
+        ClassModel classData = new ClassModel(languageResolver.getClassName(name));
         Iterator<String> iterator = json.keys();
         while (iterator.hasNext()) {
             String key = iterator.next();
@@ -37,8 +38,8 @@ public class SimpleParser extends JsonParser {
 
             if (val instanceof JSONObject) {
                 if (classes.get(key) == null) {
-                    String className = typesResolver.getClassName(key);
-                    classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.resolve(className), "Object"));
+                    String className = languageResolver.getClassName(key);
+                    classData.addField(new FieldModel(key, languageResolver.getFieldName(key), languageResolver.resolve(className), "Object"));
                     findClasses((JSONObject) val, key);
                 }
             } else if (val instanceof JSONArray) {
@@ -50,7 +51,7 @@ public class SimpleParser extends JsonParser {
                 String arrayItemTypeName;
 
                 if (parsedClass != null) {
-                    classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.getArrayType(typeName),
+                    classData.addField(new FieldModel(key, languageResolver.getFieldName(key), languageResolver.getArrayType(typeName),
                             "Array"));
                     arrayItemTypeName = typeName;
                 } else {
@@ -60,22 +61,26 @@ public class SimpleParser extends JsonParser {
                 if (array.length() > 0) {
                     Object firstArrayElement = array.get(0);
                     if (firstArrayElement instanceof JSONObject) {
-                        classData.addField(new FieldModel(key, typesResolver.getFieldName(key),
-                                typesResolver.getArrayType(arrayItemTypeName), "Array"));
-                        findClasses((JSONObject) firstArrayElement, typesResolver.resolve(arrayItemTypeName));
+                        classData.addField(new FieldModel(key, languageResolver.getFieldName(key),
+                                languageResolver.getArrayType(arrayItemTypeName), "Array"));
+                        findClasses((JSONObject) firstArrayElement, languageResolver.resolve(arrayItemTypeName));
                     } else {
                         String type = firstArrayElement.getClass().getSimpleName();
-                        classData.addField(new FieldModel(key, typesResolver.getFieldName(key),
-                                typesResolver.getArrayType(type), "Array"));
+                        classData.addField(new FieldModel(key, languageResolver.getFieldName(key),
+                                languageResolver.getArrayType(type), "Array"));
                     }
                 }
 
             } else {
                 String type = val.getClass().getSimpleName();
-                classData.addField(new FieldModel(key, typesResolver.getFieldName(key), typesResolver.resolve(type), String.valueOf(val)));
+                String resolvedType = languageResolver.resolve(type);
+                FieldModel field = new FieldModel(key, languageResolver.getFieldName(key), resolvedType
+                        , String.valueOf(val));
+                field.defaultValue = languageResolver.getDefaultValue(resolvedType);
+                classData.addField(field);
             }
         }
-        String className = typesResolver.getClassName(name);
+        String className = languageResolver.getClassName(name);
         classes.put(className, classData);
     }
 

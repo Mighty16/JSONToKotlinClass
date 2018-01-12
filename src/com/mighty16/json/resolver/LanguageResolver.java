@@ -1,6 +1,8 @@
-package com.mighty16.json;
+package com.mighty16.json.resolver;
 
-public abstract class TypesResolver {
+import com.intellij.openapi.fileTypes.FileType;
+
+public abstract class LanguageResolver {
 
     public static final String TYPE_INTEGER = "Integer";
     public static final String TYPE_LONG = "Long";
@@ -18,7 +20,15 @@ public abstract class TypesResolver {
 
     public abstract String getArrayType(String type);
 
+    public abstract String getModifier(boolean mutable);
+
+    public abstract boolean isModifierMutable(String modifier);
+
     public abstract boolean canChangeType(String type);
+
+    public abstract String getFileName(String className);
+
+    public abstract FileType getFileType();
 
     public int getNoCharPosition(String name) {
         char[] chars = name.toCharArray();

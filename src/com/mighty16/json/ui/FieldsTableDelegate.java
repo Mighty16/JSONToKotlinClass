@@ -1,7 +1,7 @@
 package com.mighty16.json.ui;
 
 import com.intellij.openapi.ui.ComboBox;
-import com.mighty16.json.TypesResolver;
+import com.mighty16.json.resolver.LanguageResolver;
 import com.mighty16.json.models.FieldModel;
 
 import javax.swing.*;
@@ -14,13 +14,13 @@ public class FieldsTableDelegate {
     private JTable fieldsTable;
     private String columns[];
     private List<FieldModel> fieldsData;
-    private TypesResolver typesResolver;
+    private LanguageResolver languageResolver;
 
 
-    public FieldsTableDelegate(JTable fieldsTable, TypesResolver resolver) {
+    public FieldsTableDelegate(JTable fieldsTable, LanguageResolver resolver) {
         this.fieldsTable = fieldsTable;
-        this.typesResolver = resolver;
-        columns = new String[]{"Enabled", "Field name", "Type", "Original value"};
+        this.languageResolver = resolver;
+        columns = new String[]{"Enabled", "Field name", "var/val", "Type", "Default value", "Original value"};
     }
 
     public void setFieldsData(List<FieldModel> fields) {
@@ -30,7 +30,14 @@ public class FieldsTableDelegate {
         TableColumn column = fieldsTable.getColumnModel().getColumn(0);
         column.setPreferredWidth(30);
 
-        TableColumn typeColumn = fieldsTable.getColumnModel().getColumn(2);
+        TableColumn modifierColumn = fieldsTable.getColumnModel().getColumn(2);
+        ComboBox<String> modifierCombobox = new ComboBox<>();
+        modifierCombobox.addItem("var");
+        modifierCombobox.addItem("val");
+
+        modifierColumn.setCellEditor(new DefaultCellEditor(modifierCombobox));
+
+        TableColumn typeColumn = fieldsTable.getColumnModel().getColumn(3);
 
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.addItem(FieldModel.TYPE_STRING);
@@ -74,6 +81,8 @@ public class FieldsTableDelegate {
                     return String.class;
                 case 3:
                     return String.class;
+                case 4:
+                    return String.class;
             }
             return super.getColumnClass(columnIndex);
         }
@@ -87,8 +96,12 @@ public class FieldsTableDelegate {
                 case 1:
                     return fieldData.name;
                 case 2:
-                    return fieldData.type;
+                    return languageResolver.getModifier(fieldData.mutable);
                 case 3:
+                    return fieldData.type;
+                case 4:
+                    return fieldData.defaultValue;
+                case 5:
                     return fieldData.originalValue;
             }
             return null;
@@ -105,17 +118,24 @@ public class FieldsTableDelegate {
                     fieldData.name = (String) aValue;
                     break;
                 case 2:
+                    fieldData.mutable = languageResolver.isModifierMutable((String) aValue);
+                    break;
+                case 3:
                     fieldData.type = (String) aValue;
+                    break;
+                case 4:
+                    fieldData.defaultValue = (String) aValue;
                     break;
             }
         }
 
         @Override
         public boolean isCellEditable(int row, int col) {
-            if (col == 3) {
+            if (col == 5) {
                 return false;
-            } else if (col == 2) {
-                return typesResolver.canChangeType(fieldsData.get(row).type);
+            }
+            if (col == 3) {
+                return languageResolver.canChangeType(fieldsData.get(row).type);
             }
             return true;
         }

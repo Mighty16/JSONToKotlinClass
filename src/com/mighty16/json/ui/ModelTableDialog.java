@@ -1,13 +1,22 @@
-package com.mighty16.json;
+package com.mighty16.json.ui;
 
+import com.intellij.openapi.ui.Messages;
 import com.mighty16.json.models.ClassModel;
+import com.mighty16.json.resolver.LanguageResolver;
 import com.mighty16.json.ui.ClassesListDelegate;
 import com.mighty16.json.ui.FieldsTableDelegate;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.util.List;
 
 public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnClassSelectedListener {
+
+    private static final int ANNOTATIONS_NONE = 0;
+    private static final int ANNOTATIONS_GSON = 1;
+    private static final int ANNOTATIONS_FAST_JSON = 2;
+    private static final int ANNOTATIONS_MOSHI = 3;
+    private static final int ANNOTATIONS_JACKSON = 4;
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -16,6 +25,11 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
     private JList list1;
     private JRadioButton annotationsNoneButton;
     private JRadioButton annotationsGsonButton;
+    private JCheckBox singleFileCheckbox;
+    private JTextField singleFileNameEdit;
+    private JRadioButton annotationsFastJson;
+    private JRadioButton annotationsMoshi;
+    private JRadioButton annotationsJackson;
 
     private FieldsTableDelegate fieldsTableDelegate;
     private ClassesListDelegate classesListDelegate;
@@ -24,12 +38,12 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
 
     private ModelTableCallbacks callbacks;
 
-    public ModelTableDialog(List<ClassModel> data, TypesResolver resolver, ModelTableCallbacks callbacks) {
+    public ModelTableDialog(List<ClassModel> data, LanguageResolver resolver, ModelTableCallbacks callbacks) {
         init();
         this.data = data;
         this.callbacks = callbacks;
         classesListDelegate = new ClassesListDelegate(list1, this, data);
-        fieldsTableDelegate = new FieldsTableDelegate(fieldsTable,resolver);
+        fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, resolver);
         fieldsTableDelegate.setFieldsData(data.get(0).fields);
     }
 
@@ -51,6 +65,13 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
             }
         });
 
+        singleFileCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                singleFileNameEdit.setEnabled(singleFileCheckbox.isSelected());
+            }
+        });
+
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -69,16 +90,30 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
 
 
     private void onOK() {
-        dispose();
-        if (callbacks!=null){
-            int annotationsType = 0;
-            if (annotationsGsonButton.isSelected()){
-                annotationsType = 1;
+        if (callbacks != null) {
+            int annotationsType = ANNOTATIONS_NONE;
+            if (annotationsGsonButton.isSelected()) {
+                annotationsType = ANNOTATIONS_GSON;
+            } else if (annotationsFastJson.isSelected()) {
+                annotationsType = ANNOTATIONS_FAST_JSON;
+            } else if (annotationsMoshi.isSelected()) {
+                annotationsType = ANNOTATIONS_MOSHI;
+            } else if (annotationsJackson.isSelected()) {
+                annotationsType = ANNOTATIONS_JACKSON;
             }
-            callbacks.onModelsReady(data,annotationsType);
+
+            String singleFileName = null;
+            if (singleFileCheckbox.isSelected()) {
+                singleFileName = singleFileNameEdit.getText();
+                if (singleFileName.length() == 0) {
+                    Messages.showErrorDialog("File name is empty!", "Error");
+                    return;
+                }
+            }
+            dispose();
+            callbacks.onModelsReady(data, singleFileName, annotationsType);
         }
     }
-
 
     @Override
     public void onClassSelected(ClassModel classData) {
@@ -86,7 +121,7 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
     }
 
     public interface ModelTableCallbacks {
-        void onModelsReady(List<ClassModel> data, int annotationsType);
+        void onModelsReady(List<ClassModel> data, String singleFileName, int annotationsType);
     }
 
 }

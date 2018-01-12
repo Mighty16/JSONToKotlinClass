@@ -13,6 +13,7 @@ public class FieldModel {
     public String originalValue;
     public boolean enabled;
     public boolean mutable;
+    public String defaultValue;
 
     public FieldModel(String jsonName, String name, String type, String originalValue) {
         this.jsonName = jsonName;
@@ -21,9 +22,4 @@ public class FieldModel {
         this.originalValue = originalValue;
         this.enabled = true;
     }
-
-    public boolean needsSerializesName() {
-        return !name.equals(jsonName);
-    }
-
 }

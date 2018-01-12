@@ -1,16 +1,17 @@
-package com.mighty16.json;
+package com.mighty16.json.parser;
 
 
+import com.mighty16.json.resolver.LanguageResolver;
 import com.mighty16.json.models.ClassModel;
 import org.json.JSONObject;
 import java.util.List;
 
 public abstract class JsonParser {
 
-    protected TypesResolver typesResolver;
+    protected LanguageResolver languageResolver;
 
-    public JsonParser(TypesResolver resolver) {
-        this.typesResolver = resolver;
+    public JsonParser(LanguageResolver resolver) {
+        this.languageResolver = resolver;
     }
 
     public abstract void parse(JSONObject json, String rootClassName);

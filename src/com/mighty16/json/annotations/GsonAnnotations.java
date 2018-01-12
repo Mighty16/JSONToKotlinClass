@@ -8,4 +8,9 @@ public class GsonAnnotations implements AnnotationGenerator {
     public String getSerializeName(String jsonKey) {
         return "@SerializedName(\"" + jsonKey + "\")";
     }
+
+    @Override
+    public String getImportString() {
+        return "com.google.gson.annotations.SerializedName";
+    }
 }

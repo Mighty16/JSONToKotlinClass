@@ -8,6 +8,7 @@ import com.mighty16.json.ui.FieldsTableDelegate;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.HashMap;
 import java.util.List;
 
 public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnClassSelectedListener {
@@ -22,7 +23,6 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTable fieldsTable;
-    private JList list1;
     private JRadioButton annotationsNoneButton;
     private JRadioButton annotationsGsonButton;
     private JCheckBox singleFileCheckbox;
@@ -30,6 +30,7 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
     private JRadioButton annotationsFastJson;
     private JRadioButton annotationsMoshi;
     private JRadioButton annotationsJackson;
+    private JTable table1;
 
     private FieldsTableDelegate fieldsTableDelegate;
     private ClassesListDelegate classesListDelegate;
@@ -42,7 +43,14 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
         init();
         this.data = data;
         this.callbacks = callbacks;
-        classesListDelegate = new ClassesListDelegate(list1, this, data);
+
+        HashMap<String,String> classNames = new HashMap<>();
+
+        for (ClassModel classModel:data){
+            classNames.put(classModel.name,classModel.name);
+        }
+
+        classesListDelegate = new ClassesListDelegate(table1, data,classNames,this);
         fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, resolver);
         fieldsTableDelegate.setFieldsData(data.get(0).fields);
     }

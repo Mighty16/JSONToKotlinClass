@@ -2,11 +2,6 @@ package com.mighty16.json.models;
 
 public class FieldModel {
 
-    public static final String TYPE_STRING = "String";
-    public static final String TYPE_DOUBLE = "Double";
-    public static final String TYPE_LONG = "Long";
-    public static final String TYPE_INT = "Int";
-
     public String jsonName;
     public String name;
     public String type;

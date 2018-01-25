@@ -54,7 +54,7 @@ public abstract class SourceFilesGenerator {
                     builder.append(annotations.getSerializeName(field.jsonName)).append("\n" + gapString);
                 }
 
-                String type = field.type;
+                String type;
                 if (!TextUtils.isEmpty(field.defaultValue)) {
                     type = field.type + " = " + field.defaultValue;
                 } else {

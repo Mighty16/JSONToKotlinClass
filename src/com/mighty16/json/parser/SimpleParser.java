@@ -1,6 +1,5 @@
 package com.mighty16.json.parser;
 
-
 import com.mighty16.json.resolver.LanguageResolver;
 import com.mighty16.json.models.ClassModel;
 import com.mighty16.json.models.FieldModel;
@@ -39,7 +38,12 @@ public class SimpleParser extends JsonParser {
             if (val instanceof JSONObject) {
                 if (classes.get(key) == null) {
                     String className = languageResolver.getClassName(key);
-                    classData.addField(new FieldModel(key, languageResolver.getFieldName(key), languageResolver.resolve(className), "Object"));
+
+                    classData.addField(new FieldModel(key,
+                            languageResolver.getFieldName(key),
+                            languageResolver.resolve(className),
+                            "Object"));
+
                     findClasses((JSONObject) val, key);
                 }
             } else if (val instanceof JSONArray) {

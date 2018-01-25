@@ -1,12 +1,15 @@
 package com.mighty16.json.ui;
 
 import com.intellij.openapi.ui.ComboBox;
+import com.mighty16.json.models.ClassModel;
 import com.mighty16.json.resolver.LanguageResolver;
 import com.mighty16.json.models.FieldModel;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import java.util.HashMap;
 import java.util.List;
 
 public class FieldsTableDelegate {
@@ -15,16 +18,18 @@ public class FieldsTableDelegate {
     private String columns[];
     private List<FieldModel> fieldsData;
     private LanguageResolver languageResolver;
+    private HashMap<String, String> classNames;
 
 
-    public FieldsTableDelegate(JTable fieldsTable, LanguageResolver resolver) {
+    public FieldsTableDelegate(JTable fieldsTable, HashMap<String, String> classNames, LanguageResolver resolver) {
         this.fieldsTable = fieldsTable;
         this.languageResolver = resolver;
+        this.classNames = classNames;
         columns = new String[]{"Enabled", "Field name", "var/val", "Type", "Default value", "Original value"};
     }
 
-    public void setFieldsData(List<FieldModel> fields) {
-        fieldsData = fields;
+    public void setClass(ClassModel classModel) {
+        fieldsData = classModel.fields;
         fieldsTable.setModel(new FieldsTableModel(fieldsData));
 
         TableColumn column = fieldsTable.getColumnModel().getColumn(0);
@@ -37,14 +42,11 @@ public class FieldsTableDelegate {
 
         modifierColumn.setCellEditor(new DefaultCellEditor(modifierCombobox));
 
-        TableColumn typeColumn = fieldsTable.getColumnModel().getColumn(3);
-
-        ComboBox<String> comboBox = new ComboBox<>();
-        comboBox.addItem(FieldModel.TYPE_STRING);
-        comboBox.addItem(FieldModel.TYPE_DOUBLE);
-        comboBox.addItem(FieldModel.TYPE_LONG);
-        comboBox.addItem(FieldModel.TYPE_INT);
-        typeColumn.setCellEditor(new DefaultCellEditor(comboBox));
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 1; i < columns.length; i++) {
+            fieldsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
     }
 
     public List<FieldModel> getFieldsData() {
@@ -98,7 +100,12 @@ public class FieldsTableDelegate {
                 case 2:
                     return languageResolver.getModifier(fieldData.mutable);
                 case 3:
-                    return fieldData.type;
+                    String className = classNames.get(fieldData.type);
+                    if (className != null) {
+                        return className;
+                    } else {
+                        return fieldData.type;
+                    }
                 case 4:
                     return fieldData.defaultValue;
                 case 5:
@@ -134,9 +141,9 @@ public class FieldsTableDelegate {
             if (col == 5) {
                 return false;
             }
-            if (col == 3) {
-                return languageResolver.canChangeType(fieldsData.get(row).type);
-            }
+//            if (col == 3) {
+//                return languageResolver.canChangeType(fieldsData.get(row).type);
+//            }
             return true;
         }
 

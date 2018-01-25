@@ -24,8 +24,6 @@ public abstract class LanguageResolver {
 
     public abstract boolean isModifierMutable(String modifier);
 
-    public abstract boolean canChangeType(String type);
-
     public abstract String getFileName(String className);
 
     public abstract FileType getFileType();

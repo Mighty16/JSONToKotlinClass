@@ -37,7 +37,7 @@ public class KotlinResolver extends LanguageResolver {
     public String resolve(String javaType) {
         String type = types.get(javaType);
         if (type == null) {
-            return StringUtils.capitalize(javaType) + "?";
+            return StringUtils.capitalize(javaType);// + "?";
         }
         return type;
     }
@@ -50,7 +50,13 @@ public class KotlinResolver extends LanguageResolver {
 
     @Override
     public String getFieldName(String jsonName) {
-        return toCamelCase(jsonName);
+        String name;
+        if (jsonName.toUpperCase().equals(jsonName)) {
+            name = jsonName.toLowerCase();
+        } else {
+            name = jsonName.substring(0, 1).toLowerCase() + jsonName.substring(1);
+        }
+        return toCamelCase(name);
     }
 
     @Override
@@ -78,11 +84,6 @@ public class KotlinResolver extends LanguageResolver {
     }
 
     @Override
-    public boolean canChangeType(String type) {
-        return !type.endsWith("?");
-    }
-
-    @Override
     public String getFileName(String className) {
         return className + ".kt";
     }
@@ -103,6 +104,4 @@ public class KotlinResolver extends LanguageResolver {
         }
         return result;
     }
-
-
 }

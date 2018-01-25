@@ -1,8 +1,6 @@
 package com.mighty16.json.ui;
 
-import com.intellij.ui.JBColor;
 import com.mighty16.json.models.ClassModel;
-
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -26,38 +24,25 @@ public class ClassesListDelegate {
 
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        list.setModel(new ClassesListModel(classDataList,classNames));
+        list.setModel(new ClassesListModel(classDataList, classNames));
 
         ListSelectionModel selectionModel = list.getSelectionModel();
 
         selectionModel.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
-                int selectedIndex = e.getFirstIndex();
-
+                int[] selectedRow = list.getSelectedRows();
+                if (selectedRow == null) return;
+                if (selectedRow.length == 0) return;
+                int selectedIndex = selectedRow[0];
                 if (listener != null) {
-                   listener.onClassSelected(classDataList.get(selectedIndex));
-               }
-
+                    listener.onClassSelected(classDataList.get(selectedIndex), selectedIndex);
+                }
             }
         });
-
-
-        //list.setBorder(BorderFactory.createLineBorder(JBColor.BLACK, 1));
-
-//        list.addListSelectionListener(new ListSelectionListener() {
-//            @Override
-//            public void valueChanged(ListSelectionEvent e) {
-//                if (listener != null) {
-//                    listener.onClassSelected(classData.get(list.getSelectedIndex()));
-//                }
-//            }
-//        });
-
     }
 
-
     public interface OnClassSelectedListener {
-        void onClassSelected(ClassModel classData);
+        void onClassSelected(ClassModel classData, int index);
     }
 
     class ClassesListModel extends AbstractTableModel {
@@ -92,7 +77,8 @@ public class ClassesListDelegate {
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            classNames.put(classData.get(rowIndex).name, (String) aValue);
+            String newValue = (String) aValue;
+            classNames.put(classData.get(rowIndex).name, newValue);
         }
 
         @Override

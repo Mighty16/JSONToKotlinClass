@@ -2,6 +2,7 @@ package com.mighty16.json.ui;
 
 import com.intellij.openapi.ui.Messages;
 import com.mighty16.json.models.ClassModel;
+import com.mighty16.json.models.FieldModel;
 import com.mighty16.json.resolver.LanguageResolver;
 import com.mighty16.json.ui.ClassesListDelegate;
 import com.mighty16.json.ui.FieldsTableDelegate;
@@ -39,20 +40,24 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
 
     private ModelTableCallbacks callbacks;
 
+    private int currentSelectedClassIndex = 0;
+
+    private HashMap<String, String> classNames;
+
     public ModelTableDialog(List<ClassModel> data, LanguageResolver resolver, ModelTableCallbacks callbacks) {
         init();
         this.data = data;
         this.callbacks = callbacks;
 
-        HashMap<String,String> classNames = new HashMap<>();
+        classNames = new HashMap<>();
 
-        for (ClassModel classModel:data){
-            classNames.put(classModel.name,classModel.name);
+        for (ClassModel classModel : data) {
+            classNames.put(classModel.name, classModel.name);
         }
 
-        classesListDelegate = new ClassesListDelegate(table1, data,classNames,this);
-        fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, resolver);
-        fieldsTableDelegate.setFieldsData(data.get(0).fields);
+        classesListDelegate = new ClassesListDelegate(table1, data, classNames, this);
+        fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, classNames, resolver);
+        fieldsTableDelegate.setClass(data.get(0));
     }
 
     private void init() {
@@ -118,14 +123,29 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
                     return;
                 }
             }
-            dispose();
+
+            for (ClassModel classModel : data) {
+                String className = classNames.get(classModel.name);
+                if (className != null) {
+                    classModel.name = className;
+                }
+                for (FieldModel field : classModel.fields) {
+                    String fieldClassName = classNames.get(field.type);
+                    if (fieldClassName != null) {
+                        field.type = fieldClassName;
+                    }
+                }
+            }
             callbacks.onModelsReady(data, singleFileName, annotationsType);
+            dispose();
         }
     }
 
     @Override
-    public void onClassSelected(ClassModel classData) {
-        fieldsTableDelegate.setFieldsData(classData.fields);
+    public void onClassSelected(ClassModel classData, int index) {
+        data.get(currentSelectedClassIndex).fields = fieldsTableDelegate.getFieldsData();
+        currentSelectedClassIndex = index;
+        fieldsTableDelegate.setClass(classData);
     }
 
     public interface ModelTableCallbacks {

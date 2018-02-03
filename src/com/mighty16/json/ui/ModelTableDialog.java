@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnClassSelectedListener {
@@ -60,7 +61,7 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
         classesListDelegate = new ClassesListDelegate(table1, data, classNames, this);
         fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, classNames, resolver);
         fieldsTableDelegate.setClass(data.get(0));
-        claasesListLabel.setBorder(new EmptyBorder(0,0,10,0));
+        claasesListLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
     }
 
     private void init() {
@@ -132,10 +133,16 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
                 if (className != null) {
                     classModel.name = className;
                 }
-                for (FieldModel field : classModel.fields) {
-                    String fieldClassName = classNames.get(field.type);
-                    if (fieldClassName != null) {
-                        field.type = fieldClassName;
+                Iterator<FieldModel> iterator = classModel.fields.iterator();
+                while (iterator.hasNext()) {
+                    FieldModel field = iterator.next();
+                    if (!field.enabled) {
+                        iterator.remove();
+                    } else {
+                        String fieldClassName = classNames.get(field.type);
+                        if (fieldClassName != null) {
+                            field.type = fieldClassName;
+                        }
                     }
                 }
             }

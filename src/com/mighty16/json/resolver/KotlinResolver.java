@@ -82,7 +82,7 @@ public class KotlinResolver extends LanguageResolver {
     @Override
     public String getFieldTypeAndValue(FieldModel field) {
         String type = field.optional ? field.type + "?" : field.type;
-        return field.defaultValue != null ? type + " = " + field.defaultValue : type;
+        return (field.defaultValue != null && field.defaultValue.length() > 0) ? type + " = " + field.defaultValue : type;
     }
 
     @Override

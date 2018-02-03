@@ -11,6 +11,6 @@ public class FastJsonAnnotation implements AnnotationGenerator {
 
     @Override
     public String getImportString() {
-        return "com.alibaba.fastjson.JSON";
+        return "import com.alibaba.fastjson.JSON";
     }
 }

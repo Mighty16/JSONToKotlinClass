@@ -9,6 +9,6 @@ public class JacksonAnnotations implements AnnotationGenerator {
 
     @Override
     public String getImportString() {
-        return "com.fasterxml.jackson.annotation.JsonProperty";
+        return "import com.fasterxml.jackson.annotation.JsonProperty";
     }
 }

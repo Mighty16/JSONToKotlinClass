@@ -54,17 +54,12 @@ public abstract class SourceFilesGenerator {
                     builder.append(annotations.getSerializeName(field.jsonName)).append("\n" + gapString);
                 }
 
-                String type;
-                if (!TextUtils.isEmpty(field.defaultValue)) {
-                    type = field.type + " = " + field.defaultValue;
-                } else {
-                    type = field.type;
-                }
+                String typeAndValue = resolver.getFieldTypeAndValue(field);
 
                 builder.append(resolver.getModifier(field.mutable) + " ")
                         .append(field.name)
                         .append(": ")
-                        .append(type);
+                        .append(typeAndValue);
                 if (i < size - 1) {
                     builder.append(",\n" + gapString);
                 }
@@ -72,30 +67,6 @@ public abstract class SourceFilesGenerator {
         }
         builder.append(CLASS_END_BLOCK);
         return builder.toString();
-    }
-
-    public PsiDirectory createDirectory(PsiDirectory parent, String name) throws IncorrectOperationException {
-        PsiDirectory result = null;
-        for (PsiDirectory dir : parent.getSubdirectories()) {
-            if (dir.getName().equalsIgnoreCase(name)) {
-                result = dir;
-                break;
-            }
-        }
-        if (null == result) {
-            result = parent.createSubdirectory(name);
-        }
-        return result;
-    }
-
-    public PsiDirectory createPackage(PsiDirectory sourceDir, String qualifiedPackage) throws IncorrectOperationException {
-        PsiDirectory parent = sourceDir;
-        StringTokenizer token = new StringTokenizer(qualifiedPackage, ".");
-        while (token.hasMoreTokens()) {
-            String dirName = token.nextToken();
-            parent = createDirectory(parent, dirName);
-        }
-        return parent;
     }
 
     private String getGapString(int count) {

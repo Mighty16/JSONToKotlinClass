@@ -25,7 +25,7 @@ public class FieldsTableDelegate {
         this.fieldsTable = fieldsTable;
         this.languageResolver = resolver;
         this.classNames = classNames;
-        columns = new String[]{"Enabled", "Field name", "var/val", "Type", "Default value", "Original value"};
+        columns = new String[]{"Enabled", "Field name", "var/val", "Optional", "Default value", "Original value"};
     }
 
     public void setClass(ClassModel classModel) {
@@ -45,7 +45,9 @@ public class FieldsTableDelegate {
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 1; i < columns.length; i++) {
-            fieldsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            if (i!=3) {
+                fieldsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            }
         }
     }
 
@@ -82,7 +84,7 @@ public class FieldsTableDelegate {
                 case 2:
                     return String.class;
                 case 3:
-                    return String.class;
+                    return Boolean.class;
                 case 4:
                     return String.class;
             }
@@ -100,12 +102,7 @@ public class FieldsTableDelegate {
                 case 2:
                     return languageResolver.getModifier(fieldData.mutable);
                 case 3:
-                    String className = classNames.get(fieldData.type);
-                    if (className != null) {
-                        return className;
-                    } else {
-                        return fieldData.type;
-                    }
+                    return fieldData.optional;
                 case 4:
                     return fieldData.defaultValue;
                 case 5:
@@ -128,7 +125,7 @@ public class FieldsTableDelegate {
                     fieldData.mutable = languageResolver.isModifierMutable((String) aValue);
                     break;
                 case 3:
-                    fieldData.type = (String) aValue;
+                    fieldData.optional = (Boolean) aValue;
                     break;
                 case 4:
                     fieldData.defaultValue = (String) aValue;
@@ -141,9 +138,6 @@ public class FieldsTableDelegate {
             if (col == 5) {
                 return false;
             }
-//            if (col == 3) {
-//                return languageResolver.canChangeType(fieldsData.get(row).type);
-//            }
             return true;
         }
 

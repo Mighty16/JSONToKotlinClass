@@ -11,6 +11,6 @@ public class MoshiAnnotations implements AnnotationGenerator {
 
     @Override
     public String getImportString() {
-        return "com.squareup.moshi.Json";
+        return "import com.squareup.moshi.Json";
     }
 }

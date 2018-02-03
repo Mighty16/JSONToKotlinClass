@@ -5,6 +5,7 @@ public class FieldModel {
     public String jsonName;
     public String name;
     public String type;
+    public boolean optional;
     public String originalValue;
     public boolean enabled;
     public boolean mutable;
@@ -16,5 +17,8 @@ public class FieldModel {
         this.type = type;
         this.originalValue = originalValue;
         this.enabled = true;
+        this.optional = false;
     }
+
+
 }

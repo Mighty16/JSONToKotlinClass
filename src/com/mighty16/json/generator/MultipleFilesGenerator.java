@@ -1,9 +1,6 @@
 package com.mighty16.json.generator;
 
-
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.StatusBar;
 import com.intellij.psi.*;
 import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.mighty16.json.annotations.AnnotationGenerator;
@@ -31,7 +28,7 @@ public class MultipleFilesGenerator extends SourceFilesGenerator {
 
             builder.append(String.format(PACKAGE_BLOCK, classData.packageName));
             if (annotations != null) {
-                builder.append("import " + annotations.getImportString() + "\n\n");
+                builder.append(annotations.getImportString() + "\n\n");
             }
 
             String sourceText = builder.toString() + generateFileContentForClass(classData);

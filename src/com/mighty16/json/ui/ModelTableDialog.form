@@ -3,9 +3,11 @@
   <grid id="cbd77" binding="contentPane" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="48" y="54" width="829" height="543"/>
+      <xy x="48" y="54" width="900" height="543"/>
     </constraints>
-    <properties/>
+    <properties>
+      <preferredSize width="800" height="494"/>
+    </properties>
     <border type="none"/>
     <children>
       <grid id="94766" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
@@ -51,160 +53,172 @@
           </grid>
         </children>
       </grid>
-      <grid id="e3588" layout-manager="BorderLayout" hgap="0" vgap="0">
+      <grid id="ef890" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="ef890" layout-manager="GridLayoutManager" row-count="4" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-            <margin top="0" left="0" bottom="0" right="0"/>
-            <constraints border-constraint="Center"/>
-            <properties/>
+          <splitpane id="73828">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="321"/>
+              </grid>
+            </constraints>
+            <properties>
+              <continuousLayout value="false"/>
+            </properties>
             <border type="none"/>
             <children>
-              <grid id="f9566" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                <margin top="0" left="0" bottom="0" right="0"/>
+              <scrollpane id="10af2">
                 <constraints>
-                  <grid row="2" column="6" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <splitpane position="right"/>
                 </constraints>
-                <properties/>
-                <border type="line" title="Annotations"/>
+                <properties>
+                  <preferredSize width="400" height="439"/>
+                </properties>
+                <border type="none" title="Fields settings"/>
                 <children>
-                  <component id="5b60" class="javax.swing.JRadioButton" binding="annotationsNoneButton">
-                    <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
+                  <component id="24ad2" class="javax.swing.JTable" binding="fieldsTable">
+                    <constraints/>
                     <properties>
-                      <text value="None"/>
-                    </properties>
-                  </component>
-                  <component id="ab54c" class="javax.swing.JRadioButton" binding="annotationsGsonButton">
-                    <constraints>
-                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <selected value="true"/>
-                      <text value="Gson"/>
-                    </properties>
-                  </component>
-                  <component id="12110" class="javax.swing.JRadioButton" binding="annotationsMoshi">
-                    <constraints>
-                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="2" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Moshi"/>
-                    </properties>
-                  </component>
-                  <component id="63b77" class="javax.swing.JRadioButton" binding="annotationsFastJson">
-                    <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="3" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Fast Json"/>
-                    </properties>
-                  </component>
-                  <component id="2cbae" class="javax.swing.JRadioButton" binding="annotationsJackson">
-                    <constraints>
-                      <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="2" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Jackson"/>
+                      <autoResizeMode value="4"/>
+                      <fillsViewportHeight value="true"/>
                     </properties>
                   </component>
                 </children>
-              </grid>
-              <component id="1ca35" class="javax.swing.JTextField" binding="singleFileNameEdit">
+              </scrollpane>
+              <grid id="f8f3d" layout-manager="BorderLayout" hgap="0" vgap="0">
                 <constraints>
-                  <grid row="3" column="1" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="2" use-parent-layout="false">
-                    <preferred-size width="150" height="-1"/>
-                  </grid>
+                  <splitpane position="left"/>
                 </constraints>
                 <properties>
-                  <enabled value="false"/>
+                  <minimumSize width="200" height="45"/>
+                  <preferredSize width="220" height="439"/>
                 </properties>
-              </component>
-              <component id="28fe6" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="File name"/>
-                </properties>
-              </component>
-              <component id="c647e" class="javax.swing.JCheckBox" binding="singleFileCheckbox">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Use single file"/>
-                </properties>
-              </component>
-              <splitpane id="73828">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="7" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="200" height="200"/>
-                  </grid>
-                </constraints>
-                <properties>
-                  <continuousLayout value="false"/>
-                </properties>
-                <border type="none"/>
+                <border type="none" title="Classes"/>
                 <children>
-                  <scrollpane id="10af2">
-                    <constraints>
-                      <splitpane position="right"/>
-                    </constraints>
-                    <properties/>
+                  <component id="2ddc8" class="javax.swing.JLabel" binding="claasesListLabel">
+                    <constraints border-constraint="North"/>
+                    <properties>
+                      <alignmentY value="0.5"/>
+                      <horizontalAlignment value="10"/>
+                      <iconTextGap value="4"/>
+                      <labelFor value="6f7a0"/>
+                      <text value="&lt;html&gt;Double click on item to change class name&lt;/html&gt;"/>
+                    </properties>
+                  </component>
+                  <scrollpane id="6f7a0">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <minimumSize width="140" height="45"/>
+                    </properties>
                     <border type="none"/>
                     <children>
-                      <component id="24ad2" class="javax.swing.JTable" binding="fieldsTable">
+                      <component id="903d7" class="javax.swing.JTable" binding="table1" default-binding="true">
                         <constraints/>
                         <properties>
-                          <autoResizeMode value="4"/>
-                          <fillsViewportHeight value="true"/>
+                          <autoResizeMode value="3"/>
                         </properties>
                       </component>
                     </children>
                   </scrollpane>
-                  <grid id="1c763" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-                    <margin top="0" left="0" bottom="0" right="0"/>
+                </children>
+              </grid>
+            </children>
+          </splitpane>
+          <grid id="f9566" layout-manager="GridLayoutManager" row-count="1" column-count="5" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none" title="Annotations"/>
+            <children>
+              <component id="ab54c" class="javax.swing.JRadioButton" binding="annotationsGsonButton">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <selected value="true"/>
+                  <text value="Gson"/>
+                </properties>
+              </component>
+              <component id="12110" class="javax.swing.JRadioButton" binding="annotationsMoshi">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Moshi"/>
+                </properties>
+              </component>
+              <component id="63b77" class="javax.swing.JRadioButton" binding="annotationsFastJson">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Fast Json"/>
+                </properties>
+              </component>
+              <component id="2cbae" class="javax.swing.JRadioButton" binding="annotationsJackson">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Jackson"/>
+                </properties>
+              </component>
+              <component id="5b60" class="javax.swing.JRadioButton" binding="annotationsNoneButton">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="None"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="55394" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none" title="Single File"/>
+            <children>
+              <component id="1978a" class="javax.swing.JCheckBox" binding="singleFileCheckbox">
+                <constraints border-constraint="North"/>
+                <properties>
+                  <text value="Use Single File"/>
+                </properties>
+              </component>
+              <grid id="bfee9" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="19796" class="javax.swing.JLabel">
                     <constraints>
-                      <splitpane position="left"/>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <minimumSize width="150" height="54"/>
+                      <text value="File name"/>
                     </properties>
-                    <border type="none"/>
-                    <children>
-                      <scrollpane id="fde19">
-                        <constraints>
-                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties/>
-                        <border type="none"/>
-                        <children>
-                          <component id="ce3cc" class="javax.swing.JTable" binding="table1" default-binding="true">
-                            <constraints/>
-                            <properties>
-                              <autoResizeMode value="3"/>
-                            </properties>
-                          </component>
-                        </children>
-                      </scrollpane>
-                      <component id="ca18c" class="javax.swing.JLabel">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                        </constraints>
-                        <properties>
-                          <text value="&lt;html&gt;Double click on list item&lt;br&gt;to edit class name&lt;/html&gt;"/>
-                        </properties>
-                      </component>
-                    </children>
-                  </grid>
+                  </component>
+                  <component id="e7fd0" class="javax.swing.JTextField" binding="singleFileNameEdit">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                        <preferred-size width="200" height="-1"/>
+                      </grid>
+                    </constraints>
+                    <properties>
+                      <enabled value="false"/>
+                    </properties>
+                  </component>
                 </children>
-              </splitpane>
+              </grid>
             </children>
           </grid>
         </children>

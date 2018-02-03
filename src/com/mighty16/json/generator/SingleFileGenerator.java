@@ -34,7 +34,7 @@ public class SingleFileGenerator extends SourceFilesGenerator {
         int initialLength = resultFileContent.length();
 
         if (annotations != null) {
-            resultFileContent.insert(initialLength, "\n" + "import " + annotations.getImportString() + "\n\n");
+            resultFileContent.insert(initialLength, "\n" + annotations.getImportString() + "\n\n");
         }
 
         for (ClassModel classData : classDataList) {

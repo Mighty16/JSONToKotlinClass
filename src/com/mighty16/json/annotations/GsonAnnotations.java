@@ -11,6 +11,6 @@ public class GsonAnnotations implements AnnotationGenerator {
 
     @Override
     public String getImportString() {
-        return "com.google.gson.annotations.SerializedName";
+        return "import com.google.gson.annotations.SerializedName";
     }
 }

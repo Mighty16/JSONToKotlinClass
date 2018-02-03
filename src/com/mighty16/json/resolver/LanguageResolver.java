@@ -1,6 +1,7 @@
 package com.mighty16.json.resolver;
 
 import com.intellij.openapi.fileTypes.FileType;
+import com.mighty16.json.models.FieldModel;
 
 public abstract class LanguageResolver {
 
@@ -21,6 +22,8 @@ public abstract class LanguageResolver {
     public abstract String getArrayType(String type);
 
     public abstract String getModifier(boolean mutable);
+
+    public abstract String getFieldTypeAndValue(FieldModel field);
 
     public abstract boolean isModifierMutable(String modifier);
 

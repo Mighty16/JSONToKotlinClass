@@ -8,6 +8,7 @@ import com.mighty16.json.ui.ClassesListDelegate;
 import com.mighty16.json.ui.FieldsTableDelegate;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
     private JRadioButton annotationsMoshi;
     private JRadioButton annotationsJackson;
     private JTable table1;
+    private JLabel claasesListLabel;
 
     private FieldsTableDelegate fieldsTableDelegate;
     private ClassesListDelegate classesListDelegate;
@@ -58,6 +60,7 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
         classesListDelegate = new ClassesListDelegate(table1, data, classNames, this);
         fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, classNames, resolver);
         fieldsTableDelegate.setClass(data.get(0));
+        claasesListLabel.setBorder(new EmptyBorder(0,0,10,0));
     }
 
     private void init() {
@@ -151,5 +154,4 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
     public interface ModelTableCallbacks {
         void onModelsReady(List<ClassModel> data, String singleFileName, int annotationsType);
     }
-
 }

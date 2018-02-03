@@ -1,6 +1,7 @@
 package com.mighty16.json.resolver;
 
 import com.intellij.openapi.fileTypes.FileType;
+import com.mighty16.json.models.FieldModel;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
@@ -76,6 +77,12 @@ public class KotlinResolver extends LanguageResolver {
     @Override
     public String getModifier(boolean mutable) {
         return mutable ? "var" : "val";
+    }
+
+    @Override
+    public String getFieldTypeAndValue(FieldModel field) {
+        String type = field.optional ? field.type + "?" : field.type;
+        return field.defaultValue != null ? type + " = " + field.defaultValue : type;
     }
 
     @Override

@@ -42,9 +42,7 @@ public class ClassFromJSONAction extends AnAction implements JSONEditDialog.JSON
 
     @Override
     public void actionPerformed(AnActionEvent event) {
-
         languageResolver = new KotlinResolver();
-
         Project project = event.getProject();
         if (project == null) return;
         dataContext = event.getDataContext();
@@ -53,13 +51,8 @@ public class ClassFromJSONAction extends AnAction implements JSONEditDialog.JSON
         final Navigatable navigatable = DataKeys.NAVIGATABLE.getData(dataContext);
 
         if (navigatable != null) {
-            System.out.println("Navigatable: " + navigatable);
             if (navigatable instanceof PsiDirectory) {
                 directory = (PsiDirectory) navigatable;
-                //System.out.println("Directory: " + directory.getName());
-                //packages = new ArrayList<>();
-                //findPackages(directory);
-                //Collections.sort(packages);
             }
         }
 
@@ -67,7 +60,6 @@ public class ClassFromJSONAction extends AnAction implements JSONEditDialog.JSON
             ModuleRootManager root = ModuleRootManager.getInstance(module);
             for (VirtualFile file : root.getSourceRoots()) {
                 directory = PsiManager.getInstance(project).findDirectory(file);
-                System.out.println("Directory: " + directory.getName());
             }
         }
 
@@ -78,6 +70,7 @@ public class ClassFromJSONAction extends AnAction implements JSONEditDialog.JSON
             }
         });
         dialog.setSize(640, 480);
+        dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }
 

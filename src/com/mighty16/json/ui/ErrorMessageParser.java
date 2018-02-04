@@ -9,7 +9,7 @@ public class ErrorMessageParser {
     private Pattern jsonCharacterErrorPattern = Pattern.compile("(?<=\\[character )(.*)(?= line )");
     private Pattern jsonLineErrorPattern = Pattern.compile("(?<=line )(.*)(?=])");
 
-    public ErrorLocation findErrorLocation(String errorMessage){
+    public ErrorLocation findErrorLocation(String errorMessage) {
         try {
             Matcher characterMatcher = jsonCharacterErrorPattern.matcher(errorMessage);
             if (characterMatcher.find()) {
@@ -19,24 +19,22 @@ public class ErrorMessageParser {
                 if (lineMatcher.find()) {
                     lineNumber = errorMessage.substring(lineMatcher.start(), lineMatcher.end());
                 }
+                if (lineNumber == null) return null;
                 return new ErrorLocation(Integer.valueOf(lineNumber), Integer.valueOf(characterNumber));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    static class ErrorLocation{
+    static class ErrorLocation {
         public int line;
         public int character;
 
-        public ErrorLocation(int line,int character){
+        public ErrorLocation(int line, int character) {
             this.line = line;
             this.character = character;
         }
-
     }
-
-
 }

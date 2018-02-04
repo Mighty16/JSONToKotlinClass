@@ -1,7 +1,7 @@
 package com.mighty16.json.resolver;
 
-import com.intellij.openapi.fileTypes.FileType;
-import com.mighty16.json.models.FieldModel;
+import com.mighty16.json.core.LanguageResolver;
+import com.mighty16.json.core.models.FieldModel;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
@@ -75,6 +75,21 @@ public class KotlinResolver extends LanguageResolver {
     }
 
     @Override
+    public String getArrayOriginalValue() {
+        return "Array";
+    }
+
+    @Override
+    public String getObjectOriginalValue() {
+        return "Object";
+    }
+
+    @Override
+    public String getArrayItemOriginalValue(String type) {
+        return type + "Item";
+    }
+
+    @Override
     public String getModifier(boolean mutable) {
         return mutable ? "var" : "val";
     }
@@ -93,11 +108,6 @@ public class KotlinResolver extends LanguageResolver {
     @Override
     public String getFileName(String className) {
         return className + ".kt";
-    }
-
-    @Override
-    public FileType getFileType() {
-        return KotlinFileType.INSTANCE;
     }
 
     private String toCamelCase(String name) {

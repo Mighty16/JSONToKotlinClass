@@ -1,4 +1,4 @@
-package com.mighty16.json.models;
+package com.mighty16.json.core.models;
 
 import java.util.ArrayList;
 import java.util.List;

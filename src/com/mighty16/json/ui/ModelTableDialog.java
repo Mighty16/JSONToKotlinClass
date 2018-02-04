@@ -1,11 +1,9 @@
 package com.mighty16.json.ui;
 
 import com.intellij.openapi.ui.Messages;
-import com.mighty16.json.models.ClassModel;
-import com.mighty16.json.models.FieldModel;
-import com.mighty16.json.resolver.LanguageResolver;
-import com.mighty16.json.ui.ClassesListDelegate;
-import com.mighty16.json.ui.FieldsTableDelegate;
+import com.mighty16.json.core.models.ClassModel;
+import com.mighty16.json.core.models.FieldModel;
+import com.mighty16.json.core.LanguageResolver;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -47,10 +45,14 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
 
     private HashMap<String, String> classNames;
 
-    public ModelTableDialog(List<ClassModel> data, LanguageResolver resolver, ModelTableCallbacks callbacks) {
-        init();
+    private TextResources textResources;
+
+    public ModelTableDialog(List<ClassModel> data, LanguageResolver resolver,
+                            TextResources textResources, ModelTableCallbacks callbacks) {
         this.data = data;
         this.callbacks = callbacks;
+        this.textResources = textResources;
+        init();
 
         classNames = new HashMap<>();
 
@@ -59,7 +61,7 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
         }
 
         classesListDelegate = new ClassesListDelegate(table1, data, classNames, this);
-        fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, classNames, resolver);
+        fieldsTableDelegate = new FieldsTableDelegate(fieldsTable, resolver, textResources);
         fieldsTableDelegate.setClass(data.get(0));
         claasesListLabel.setBorder(new EmptyBorder(0, 0, 10, 0));
     }
@@ -67,29 +69,13 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
     private void init() {
         setContentPane(contentPane);
         setModal(true);
-        setTitle("Class fields settings");
+        setTitle(textResources.getFieldsDialogTitle());
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> dispose());
+        singleFileCheckbox.addItemListener(e -> singleFileNameEdit.setEnabled(singleFileCheckbox.isSelected()));
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        singleFileCheckbox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                singleFileNameEdit.setEnabled(singleFileCheckbox.isSelected());
-            }
-        });
-
-        // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -97,12 +83,9 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
             }
         });
 
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> dispose(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
 
@@ -123,7 +106,8 @@ public class ModelTableDialog extends JDialog implements ClassesListDelegate.OnC
             if (singleFileCheckbox.isSelected()) {
                 singleFileName = singleFileNameEdit.getText();
                 if (singleFileName.length() == 0) {
-                    Messages.showErrorDialog("File name is empty!", "Error");
+                    Messages.showErrorDialog(textResources.getEmptyFileNameMessage(),
+                            textResources.getEmptyFileNameTitle());
                     return;
                 }
             }

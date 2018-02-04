@@ -1,4 +1,4 @@
-package com.mighty16.json.annotations;
+package com.mighty16.json.core;
 
 
 public interface AnnotationGenerator {

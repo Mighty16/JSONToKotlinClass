@@ -1,8 +1,8 @@
-package com.mighty16.json.parser;
+package com.mighty16.json.core.parser;
 
-import com.mighty16.json.resolver.LanguageResolver;
-import com.mighty16.json.models.ClassModel;
-import com.mighty16.json.models.FieldModel;
+import com.mighty16.json.core.LanguageResolver;
+import com.mighty16.json.core.models.ClassModel;
+import com.mighty16.json.core.models.FieldModel;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,7 +42,7 @@ public class SimpleParser extends JsonParser {
                     classData.addField(new FieldModel(key,
                             languageResolver.getFieldName(key),
                             languageResolver.resolve(className),
-                            "Object"));
+                            languageResolver.getObjectOriginalValue()));
 
                     findClasses((JSONObject) val, key);
                 }
@@ -55,23 +55,26 @@ public class SimpleParser extends JsonParser {
                 String arrayItemTypeName;
 
                 if (parsedClass != null) {
-                    classData.addField(new FieldModel(key, languageResolver.getFieldName(key), languageResolver.getArrayType(typeName),
-                            "Array"));
+                    classData.addField(new FieldModel(key, languageResolver.getFieldName(key),
+                            languageResolver.getArrayType(typeName),
+                            languageResolver.getArrayOriginalValue()));
                     arrayItemTypeName = typeName;
                 } else {
-                    arrayItemTypeName = typeName + "Item";
+                    arrayItemTypeName = languageResolver.getArrayItemOriginalValue(typeName);
                 }
 
                 if (array.length() > 0) {
                     Object firstArrayElement = array.get(0);
                     if (firstArrayElement instanceof JSONObject) {
                         classData.addField(new FieldModel(key, languageResolver.getFieldName(key),
-                                languageResolver.getArrayType(arrayItemTypeName), "Array"));
+                                languageResolver.getArrayType(arrayItemTypeName),
+                                languageResolver.getArrayOriginalValue()));
                         findClasses((JSONObject) firstArrayElement, languageResolver.resolve(arrayItemTypeName));
                     } else {
                         String type = firstArrayElement.getClass().getSimpleName();
                         classData.addField(new FieldModel(key, languageResolver.getFieldName(key),
-                                languageResolver.getArrayType(type), "Array"));
+                                languageResolver.getArrayType(type),
+                                languageResolver.getArrayOriginalValue()));
                     }
                 }
 

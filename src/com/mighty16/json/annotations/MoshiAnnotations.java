@@ -1,6 +1,8 @@
 package com.mighty16.json.annotations;
 
 
+import com.mighty16.json.core.AnnotationGenerator;
+
 public class MoshiAnnotations implements AnnotationGenerator {
 
 

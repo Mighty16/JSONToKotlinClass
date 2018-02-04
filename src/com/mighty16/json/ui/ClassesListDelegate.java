@@ -1,21 +1,17 @@
 package com.mighty16.json.ui;
 
-import com.mighty16.json.models.ClassModel;
+import com.mighty16.json.core.models.ClassModel;
+
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import java.util.HashMap;
 import java.util.List;
 
 public class ClassesListDelegate {
 
-    private OnClassSelectedListener listener;
 
-    public ClassesListDelegate(JTable list, List<ClassModel> classDataList, HashMap<String, String> classNames, OnClassSelectedListener listener) {
-
-        this.listener = listener;
-
+    public ClassesListDelegate(JTable list, List<ClassModel> classDataList, HashMap<String, String> classNames,
+                               OnClassSelectedListener listener) {
         if (classDataList.size() == 1) {
             list.setVisible(false);
         } else {
@@ -28,15 +24,13 @@ public class ClassesListDelegate {
 
         ListSelectionModel selectionModel = list.getSelectionModel();
 
-        selectionModel.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                int[] selectedRow = list.getSelectedRows();
-                if (selectedRow == null) return;
-                if (selectedRow.length == 0) return;
-                int selectedIndex = selectedRow[0];
-                if (listener != null) {
-                    listener.onClassSelected(classDataList.get(selectedIndex), selectedIndex);
-                }
+        selectionModel.addListSelectionListener(e -> {
+            int[] selectedRow = list.getSelectedRows();
+            if (selectedRow == null) return;
+            if (selectedRow.length == 0) return;
+            int selectedIndex = selectedRow[0];
+            if (listener != null) {
+                listener.onClassSelected(classDataList.get(selectedIndex), selectedIndex);
             }
         });
     }

@@ -2,14 +2,11 @@ package com.mighty16.json.ui;
 
 import com.intellij.openapi.ui.Messages;
 import com.mighty16.json.resolver.KotlinResolver;
-import com.mighty16.json.models.ClassModel;
-import com.mighty16.json.parser.SimpleParser;
-import com.mighty16.json.ui.ErrorMessageParser;
-import com.mighty16.json.ui.GuiHelper;
-import com.mighty16.json.ui.JSONColorizer;
-import com.mighty16.json.ui.PopupListener;
+import com.mighty16.json.core.models.ClassModel;
+import com.mighty16.json.core.parser.SimpleParser;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -26,30 +23,21 @@ public class JSONEditDialog extends JDialog {
     private JSONColorizer jsonColorizer;
     private JSONEditCallbacks callbacks;
     private ErrorMessageParser errorMessageParser;
-
     private boolean isFormatting = false;
 
+    private TextResources textResources;
 
-    public JSONEditDialog(JSONEditCallbacks callbacks) {
+    public JSONEditDialog(JSONEditCallbacks callbacks, TextResources resources) {
         this.callbacks = callbacks;
+        this.textResources = resources;
         setContentPane(contentPane);
         setModal(true);
-        setTitle("Generate class from JSON");
+        setTitle(textResources.getJSONDialogTitle());
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> dispose());
 
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
@@ -57,12 +45,9 @@ public class JSONEditDialog extends JDialog {
             }
         });
 
-        // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> dispose(),
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         jsonTestPanel.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -87,8 +72,8 @@ public class JSONEditDialog extends JDialog {
                 }
             }
         });
-        JPopupMenu contextMenuPopup = GuiHelper.getJsonContextMenuPopup(jsonTestPanel);
-        jsonTestPanel.addMouseListener(new PopupListener(contextMenuPopup));
+        PopupListener popupListener = new PopupListener(GuiHelper.getJsonContextMenuPopup(jsonTestPanel, textResources));
+        jsonTestPanel.addMouseListener(popupListener);
 
         jsonColorizer = new JSONColorizer(jsonTestPanel);
         errorMessageParser = new ErrorMessageParser();
@@ -97,12 +82,14 @@ public class JSONEditDialog extends JDialog {
     private void onOK() {
         String text = jsonTestPanel.getText();
         if (text.isEmpty()) {
-            Messages.showErrorDialog("JSON is empty!", "Error");
+            Messages.showErrorDialog(textResources.getEmptyJSONMessage(),
+                    textResources.getEmptyJSONTitle());
             return;
         }
         String className = classNameTextField.getText();
         if (className.isEmpty()) {
-            Messages.showErrorDialog("Class name is empty!", "Error");
+            Messages.showErrorDialog(textResources.getEmptyClassMessage(),
+                    textResources.getEmptyClassNameTitle());
             return;
         }
         processJSON(text, className);
@@ -120,30 +107,27 @@ public class JSONEditDialog extends JDialog {
             return;
         }
         isFormatting = true;
-        Runnable doFormatting = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject json = new JSONObject(text);
-                    int currentCaretPosition = jsonTestPanel.getCaretPosition();
-                    jsonTestPanel.setText(json.toString(4));
-                    jsonTestPanel.setCaretPosition(currentCaretPosition);
-                    jsonErrorLabel.setText("");
-                    jsonColorizer.clearErrorHighLight();
-                } catch (JSONException jsonException) {
-                    String errorMessage = jsonException.getMessage();
-                    jsonErrorLabel.setText(errorMessage);
+        Runnable doFormatting = () -> {
+            try {
+                JSONObject json = new JSONObject(text);
+                int currentCaretPosition = jsonTestPanel.getCaretPosition();
+                jsonTestPanel.setText(json.toString(4));
+                jsonTestPanel.setCaretPosition(currentCaretPosition);
+                jsonErrorLabel.setText("");
+                jsonColorizer.clearErrorHighLight();
+            } catch (JSONException jsonException) {
+                String errorMessage = jsonException.getMessage();
+                jsonErrorLabel.setText(errorMessage);
 
-                    ErrorMessageParser.ErrorLocation errorLocation = errorMessageParser.findErrorLocation(errorMessage);
-                    if (errorLocation!=null){
-                        jsonColorizer.highlightError(errorLocation.line, errorLocation.character);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    jsonColorizer.colorize();
-                    isFormatting = false;
+                ErrorMessageParser.ErrorLocation errorLocation = errorMessageParser.findErrorLocation(errorMessage);
+                if (errorLocation != null) {
+                    jsonColorizer.highlightError(errorLocation.line, errorLocation.character);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                jsonColorizer.colorize();
+                isFormatting = false;
             }
         };
         SwingUtilities.invokeLater(doFormatting);
@@ -163,10 +147,12 @@ public class JSONEditDialog extends JDialog {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            Messages.showErrorDialog("JSON ERROR: " + e.getMessage(), "JSON parsing Error");
+            Messages.showErrorDialog(textResources.getJSONErrorMessage(e.getMessage()),
+                    textResources.getJSONErrorTitle());
         } catch (Exception e) {
             e.printStackTrace();
-            Messages.showErrorDialog("ERROR: " + e.getMessage(), "JSON parsing Error");
+            Messages.showErrorDialog(textResources.getErrorMessage(e.getMessage()),
+                    textResources.getJSONErrorTitle());
         }
     }
 

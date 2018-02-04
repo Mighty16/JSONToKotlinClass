@@ -1,41 +1,31 @@
 package com.mighty16.json.ui;
 
-
 import javax.swing.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GuiHelper {
 
-    public static JPopupMenu getJsonContextMenuPopup(final JEditorPane textPanel) {
-        ActionListener actionListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String command = e.getActionCommand();
-                if (command.equals("Paste")) {
-                    textPanel.paste();
-                } else if (command.equals("Copy")) {
-                    textPanel.copy();
-                } else if (command.equals("Cut")) {
-                    textPanel.cut();
-                }
+    public static JPopupMenu getJsonContextMenuPopup(final JEditorPane textPanel, TextResources textResources) {
+        ActionListener actionListener = e -> {
+            String command = e.getActionCommand();
+            if (command.equals(textResources.getPasteCommand())) {
+                textPanel.paste();
+            } else if (command.equals(textResources.getCopyCommand())) {
+                textPanel.copy();
+            } else if (command.equals(textResources.getCutCommand())) {
+                textPanel.cut();
             }
         };
 
         JPopupMenu popupMenu = new JPopupMenu();
-
-        JMenuItem cutMenuItem = new JMenuItem("Cut");
+        JMenuItem cutMenuItem = new JMenuItem(textResources.getCutCommand());
         popupMenu.add(cutMenuItem);
-
-        // Copy
-        JMenuItem copyMenuItem = new JMenuItem("Copy");
+        JMenuItem copyMenuItem = new JMenuItem(textResources.getCopyCommand());
         copyMenuItem.addActionListener(actionListener);
         popupMenu.add(copyMenuItem);
-        // Paste
-        JMenuItem pasteMenuItem = new JMenuItem("Paste");
+        JMenuItem pasteMenuItem = new JMenuItem(textResources.getPasteCommand());
         pasteMenuItem.addActionListener(actionListener);
         popupMenu.add(pasteMenuItem);
-
         return popupMenu;
     }
 

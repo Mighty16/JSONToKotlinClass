@@ -1,15 +1,14 @@
 package com.mighty16.json.ui;
 
 import com.intellij.openapi.ui.ComboBox;
-import com.mighty16.json.models.ClassModel;
-import com.mighty16.json.resolver.LanguageResolver;
-import com.mighty16.json.models.FieldModel;
+import com.mighty16.json.core.models.ClassModel;
+import com.mighty16.json.core.LanguageResolver;
+import com.mighty16.json.core.models.FieldModel;
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
-import java.util.HashMap;
 import java.util.List;
 
 public class FieldsTableDelegate {
@@ -18,14 +17,12 @@ public class FieldsTableDelegate {
     private String columns[];
     private List<FieldModel> fieldsData;
     private LanguageResolver languageResolver;
-    private HashMap<String, String> classNames;
 
 
-    public FieldsTableDelegate(JTable fieldsTable, HashMap<String, String> classNames, LanguageResolver resolver) {
+    public FieldsTableDelegate(JTable fieldsTable, LanguageResolver resolver,TextResources textResources) {
         this.fieldsTable = fieldsTable;
         this.languageResolver = resolver;
-        this.classNames = classNames;
-        columns = new String[]{"Enabled", "Field name", "var/val", "Optional", "Default value", "Original value"};
+        columns = textResources.getFieldsTableColumns();
     }
 
     public void setClass(ClassModel classModel) {
@@ -37,15 +34,15 @@ public class FieldsTableDelegate {
 
         TableColumn modifierColumn = fieldsTable.getColumnModel().getColumn(2);
         ComboBox<String> modifierCombobox = new ComboBox<>();
-        modifierCombobox.addItem("var");
-        modifierCombobox.addItem("val");
+        modifierCombobox.addItem(languageResolver.getModifier(true));
+        modifierCombobox.addItem(languageResolver.getModifier(false));
 
         modifierColumn.setCellEditor(new DefaultCellEditor(modifierCombobox));
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 1; i < columns.length; i++) {
-            if (i!=3) {
+            if (i != 3) {
                 fieldsTable.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
             }
         }
@@ -58,7 +55,7 @@ public class FieldsTableDelegate {
 
     class FieldsTableModel extends AbstractTableModel {
 
-        public List<FieldModel> items;
+        private List<FieldModel> items;
 
         public FieldsTableModel(List<FieldModel> items) {
             this.items = items;
@@ -135,10 +132,7 @@ public class FieldsTableDelegate {
 
         @Override
         public boolean isCellEditable(int row, int col) {
-            if (col == 5) {
-                return false;
-            }
-            return true;
+            return col != 5;
         }
 
         @Override

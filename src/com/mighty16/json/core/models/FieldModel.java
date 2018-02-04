@@ -1,4 +1,4 @@
-package com.mighty16.json.models;
+package com.mighty16.json.core.models;
 
 public class FieldModel {
 

@@ -1,38 +1,33 @@
 package com.mighty16.json.generator;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
-import com.mighty16.json.annotations.AnnotationGenerator;
-import com.mighty16.json.resolver.LanguageResolver;
-import com.mighty16.json.models.ClassModel;
-
+import com.mighty16.json.core.FileSaver;
+import com.mighty16.json.core.AnnotationGenerator;
+import com.mighty16.json.core.LanguageResolver;
+import com.mighty16.json.core.models.ClassModel;
 import java.util.List;
 
-public class MultipleFilesGenerator extends SourceFilesGenerator {
+public class MultipleFilesGenerator extends KotlinFileGenerator {
 
-    public MultipleFilesGenerator(LanguageResolver resolver, AnnotationGenerator annotations) {
-        super(resolver, annotations);
+
+    public MultipleFilesGenerator(FileSaver fileSaver, LanguageResolver resolver, AnnotationGenerator annotations) {
+        super(resolver, annotations, fileSaver);
     }
 
     @Override
-    public void generateFiles(PsiDirectory directory, List<ClassModel> classDataList) {
-        Project project = directory.getProject();
-        PsiFileFactory factory = PsiFileFactory.getInstance(project);
-        PsiDirectoryFactory directoryFactory = PsiDirectoryFactory.getInstance(directory.getProject());
-
+    public void generateFiles(String packageName, List<ClassModel> classDataList) {
         for (ClassModel classData : classDataList) {
-            classData.packageName = directoryFactory.getQualifiedName(directory, true);
+            classData.packageName = packageName;
 
             StringBuilder builder = new StringBuilder();
 
             builder.append(String.format(PACKAGE_BLOCK, classData.packageName));
             if (annotations != null) {
-                builder.append(annotations.getImportString() + "\n\n");
+                String importString = annotations.getImportString() + "\n\n";
+                builder.append(importString);
             }
 
             String sourceText = builder.toString() + generateFileContentForClass(classData);
-            saveFile(factory, directory, resolver.getFileName(classData.name), sourceText);
+            fileSaver.saveFile(resolver.getFileName(classData.name), sourceText);
         }
 
         if (listener != null) {

@@ -1,35 +1,28 @@
 package com.mighty16.json.generator;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFileFactory;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
-import com.mighty16.json.resolver.LanguageResolver;
-import com.mighty16.json.annotations.AnnotationGenerator;
-import com.mighty16.json.models.ClassModel;
+import com.mighty16.json.core.FileSaver;
+import com.mighty16.json.core.LanguageResolver;
+import com.mighty16.json.core.AnnotationGenerator;
+import com.mighty16.json.core.models.ClassModel;
+
 import java.util.List;
 
-public class SingleFileGenerator extends SourceFilesGenerator {
-
+public class SingleFileGenerator extends KotlinFileGenerator {
 
     private String fileName;
 
-    public SingleFileGenerator(LanguageResolver resolver, AnnotationGenerator annotations, String fileName) {
-        super(resolver, annotations);
+    public SingleFileGenerator(String fileName, LanguageResolver resolver,
+                               AnnotationGenerator annotations, FileSaver fileSaver) {
+        super(resolver, annotations, fileSaver);
         this.fileName = fileName;
     }
 
     @Override
-    public void generateFiles(PsiDirectory directory, List<ClassModel> classDataList) {
-        Project project = directory.getProject();
-        PsiFileFactory factory = PsiFileFactory.getInstance(project);
-        PsiDirectoryFactory directoryFactory = PsiDirectoryFactory.getInstance(directory.getProject());
-
-        String packageName = directoryFactory.getQualifiedName(directory, true);
+    public void generateFiles(String packageName, List<ClassModel> classDataList) {
 
         final StringBuilder resultFileContent = new StringBuilder();
 
-        resultFileContent.append(String.format(SourceFilesGenerator.PACKAGE_BLOCK, packageName));
+        resultFileContent.append(String.format(PACKAGE_BLOCK, packageName));
 
         int initialLength = resultFileContent.length();
 
@@ -38,10 +31,11 @@ public class SingleFileGenerator extends SourceFilesGenerator {
         }
 
         for (ClassModel classData : classDataList) {
-            resultFileContent.append(generateFileContentForClass(classData) + "\n\n\n");
+            String content = generateFileContentForClass(classData) + "\n\n\n";
+            resultFileContent.append(content);
         }
 
-        saveFile(factory,directory,resolver.getFileName(fileName),resultFileContent.toString());
+        fileSaver.saveFile(resolver.getFileName(fileName), resultFileContent.toString());
 
         if (listener != null) {
             listener.onFilesGenerated(1);

@@ -21,7 +21,7 @@ Right click on package -> Generate class from JSON -> Copy json, type class name
 
 <img src="images/demo_gif.gif" width="100%" height="100%">
 
-#License
+# License
 MIT License
 
 Copyright (c) 2017 Mighty16

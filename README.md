@@ -1,6 +1,8 @@
 # JSONToKotlinClass
 Intellij Idea, Android Studio plugin.
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-JSONToKotlinClass-brightgreen.svg?style=flat-square)](https://android-arsenal.com/details/1/6913)
+
 Plugin generates Kotlin data classes from JSON text. It can find inner classes in nested JSON. You can disable undesirable fields in class, change field name, set it type to optional, specify default value and add annotations for popular json libraries. 
 
 Features: 

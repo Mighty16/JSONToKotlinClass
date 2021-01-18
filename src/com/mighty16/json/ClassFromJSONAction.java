@@ -4,6 +4,7 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
@@ -30,7 +31,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.List;
 
-public class ClassFromJSONAction extends AnAction implements JSONEditDialog.JSONEditCallbacks, ModelTableDialog.ModelTableCallbacks {
+public class ClassFromJSONAction extends AnAction implements JSONEditDialog.JSONEditCallbacks,
+        ModelTableDialog.ModelTableCallbacks {
 
     private PsiDirectory directory;
     private Point lastDialogLocation;
@@ -49,20 +51,21 @@ public class ClassFromJSONAction extends AnAction implements JSONEditDialog.JSON
         Project project = event.getProject();
         if (project == null) return;
         DataContext dataContext = event.getDataContext();
-        final Module module = DataKeys.MODULE.getData(dataContext);
-        if (module == null) return;
-        final Navigatable navigatable = DataKeys.NAVIGATABLE.getData(dataContext);
+        final Navigatable navigatable = PlatformDataKeys.NAVIGATABLE.getData(dataContext);
 
         if (navigatable != null) {
             if (navigatable instanceof PsiDirectory) {
                 directory = (PsiDirectory) navigatable;
-            }
-        }
-
-        if (directory == null) {
-            ModuleRootManager root = ModuleRootManager.getInstance(module);
-            for (VirtualFile file : root.getSourceRoots()) {
-                directory = PsiManager.getInstance(project).findDirectory(file);
+            } else{
+                final VirtualFile projectFile = project.getProjectFile();
+                if (projectFile == null) throw new NullPointerException("Project file not found");
+                Module module = ProjectRootManager.getInstance(project).getFileIndex().getModuleForFile(projectFile);
+                if (module!=null){
+                    ModuleRootManager root = ModuleRootManager.getInstance(module);
+                    for (VirtualFile file : root.getSourceRoots()) {
+                        directory = PsiManager.getInstance(project).findDirectory(file);
+                    }
+                }
             }
         }
 

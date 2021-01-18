@@ -1,6 +1,5 @@
 package com.mighty16.json;
 
-
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiDirectory;
@@ -24,9 +23,7 @@ public class IDEFileSaver extends FileSaver {
     public void saveFile(String fileName, String fileContent) {
         PsiFile classFile = factory.createFileFromText(fileName, fileType, fileContent);
         PsiFile oldFile = directory.findFile(fileName);
-
         if (oldFile != null) {
-
             if (listener != null && listener.shouldOverwriteFile(fileName)) {
                 WriteCommandAction.runWriteCommandAction(directory.getProject(), () -> {
                     oldFile.delete();
@@ -38,6 +35,5 @@ public class IDEFileSaver extends FileSaver {
                 directory.add(classFile);
             });
         }
-
     }
 }

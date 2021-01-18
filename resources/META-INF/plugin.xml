@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.mighty16.json.kotlin.class</id>
     <name>Generate Kotlin data classes from JSON</name>
-    <version>0.9.5</version>
+    <version>0.9.6</version>
     <vendor email="mighty16.developer@gmail.com">Mighty16</vendor>
 
     <description><![CDATA[Plugin generates Kotlin data classes from JSON text.
@@ -25,10 +25,9 @@
         <a href="mailto:mighty16.developer@gmail.com">mighty16.developer@gmail.com</a>]]>
     </description>
 
-    <idea-version since-build="145.0"/>
+    <idea-version since-build="193"/>
 
-    <extensions defaultExtensionNs="com.intellij">
-    </extensions>
+    <depends>com.intellij.modules.platform</depends>
 
     <actions>
         <action id="com.mighty16.json.ClassFromJSONAction"
